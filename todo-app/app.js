@@ -8,13 +8,16 @@ app.get("/", function (request, response) {
   response.send("Hello World");
 });
 
+// ✅ GET all todos
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
-  // FILL IN YOUR CODE HERE
-
-  // First, we have to query our PostgerSQL database using Sequelize to get list of all Todos.
-  // Then, we have to respond with all Todos, like:
-  // response.send(todos)
+  try {
+    const todos = await Todo.findAll(); // Fetch all todos from DB
+    response.send(todos); // Send them in response
+  } catch (error) {
+    console.error(error);
+    response.status(500).send({ error: "Failed to fetch todos" });
+  }
 });
 
 app.get("/todos/:id", async function (request, response) {
@@ -48,13 +51,17 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
   }
 });
 
+// ✅ DELETE a todo by ID
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
-  // FILL IN YOUR CODE HERE
-
-  // First, we have to query our database to delete a Todo by ID.
-  // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
-  // response.send(true)
+  try {
+    const deleted = await Todo.destroy({ where: { id: request.params.id } });
+    response.send(deleted > 0); // true if deleted, false if not found
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
 });
 
 module.exports = app;
+
