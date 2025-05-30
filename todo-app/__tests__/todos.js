@@ -26,7 +26,7 @@ describe("Todo Application", function () {
       dueDate: new Date().toISOString(),
       completed: false,
     });
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(201);
     expect(response.header["content-type"]).toBe(
       "application/json; charset=utf-8"
     );
